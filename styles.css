@@ -721,6 +721,65 @@ a {
 }
 
 /* ============================================
+   SOBRE EGP GROUP
+   ============================================ */
+.sobre-egp {
+    background: var(--color-bg-light);
+}
+
+.sobre-egp-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+    align-items: center;
+}
+
+.sobre-egp-image {
+    position: relative;
+}
+
+.sobre-egp-image img {
+    width: 100%;
+    border-radius: var(--border-radius);
+}
+
+.image-caption {
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+    margin-top: var(--spacing-sm);
+    font-style: italic;
+}
+
+.sobre-egp-text p {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+    .sobre-egp-content {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-2xl);
+    }
+}
+
+@media (min-width: 1024px) {
+    .sobre-egp-content {
+        gap: var(--spacing-3xl);
+    }
+    
+    .sobre-egp-text p {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .sobre-egp-text p {
+        font-size: 1rem;
+    }
+}
+
+/* ============================================
    CONTACTO
    ============================================ */
 .contacto {
