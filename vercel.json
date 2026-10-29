@@ -1,0 +1,40 @@
+{
+  "routes": [
+    {
+      "src": "/autodiscover/autodiscover.xml",
+      "dest": "/api/autodiscover"
+    },
+    {
+      "src": "/autodiscover/autodiscover.json",
+      "dest": "/api/autodiscover"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/mail/config-v1.1.xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/xml; charset=utf-8"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/.well-known/autoconfig/mail/config-v1.1.xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/xml; charset=utf-8"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ]
+}
