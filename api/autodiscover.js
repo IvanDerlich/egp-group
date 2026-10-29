@@ -12,17 +12,36 @@ module.exports = async (req, res) => {
   let emailAddress = 'contacto@egpgroup.com.ar'; // default
 
   // Try to parse email from POST body (Outlook sends XML)
-  if (req.method === 'POST' && req.body) {
+  if (req.method === 'POST') {
     try {
-      const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+      let body = '';
+      
+      // Check if body is already parsed
+      if (req.body) {
+        if (typeof req.body === 'string') {
+          body = req.body;
+        } else if (typeof req.body === 'object') {
+          // If it's already parsed as JSON, try to stringify and look for email
+          body = JSON.stringify(req.body);
+        }
+      }
+      
       // Extract email from XML like <EMailAddress>user@domain.com</EMailAddress>
-      const emailMatch = body.match(/<EMailAddress>([^<]+)<\/EMailAddress>/i);
-      if (emailMatch && emailMatch[1]) {
-        emailAddress = emailMatch[1];
+      if (body) {
+        const emailMatch = body.match(/<EMailAddress>([^<]+)<\/EMailAddress>/i);
+        if (emailMatch && emailMatch[1]) {
+          emailAddress = emailMatch[1];
+        }
       }
     } catch (e) {
       // Use default email
+      console.error('Error parsing email:', e);
     }
+  }
+  
+  // Also check query parameter for GET requests
+  if (req.query && req.query.email) {
+    emailAddress = req.query.email;
   }
 
   // Outlook Autodiscover XML response
