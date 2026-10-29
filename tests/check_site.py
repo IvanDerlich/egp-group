@@ -156,6 +156,53 @@ def check_site(html_path):
     else:
         print(f"   ✓ All referenced assets exist")
     
+    # Check LinkedIn link
+    print(f"\n4. Checking LinkedIn link...")
+    linkedin_link_found = False
+    linkedin_errors = []
+    
+    for tag, attrs_dict in [(tag, dict(attrs)) for tag, attrs in [(checker.links[i][0], checker.links[i][1]) for i in range(len(checker.links))] if dict(attrs).get('href', '').startswith('https://www.linkedin.com/company/egp-group-mendoza')]:
+        linkedin_link_found = True
+        # Check target and rel attributes
+        if attrs_dict.get('target') != '_blank':
+            linkedin_errors.append("LinkedIn link missing target='_blank'")
+        if attrs_dict.get('rel') != 'noopener':
+            linkedin_errors.append("LinkedIn link missing rel='noopener'")
+        if 'aria-label' not in attrs_dict:
+            linkedin_errors.append("LinkedIn link missing aria-label")
+        elif 'LinkedIn de EGP Group' not in attrs_dict.get('aria-label', ''):
+            linkedin_errors.append(f"LinkedIn link has incorrect aria-label: {attrs_dict.get('aria-label')}")
+    
+    # Also check by parsing HTML directly since we may not have stored links
+    if not linkedin_link_found:
+        import re
+        linkedin_pattern = r'<a[^>]*href="https://www\.linkedin\.com/company/egp-group-mendoza/"[^>]*>'
+        if re.search(linkedin_pattern, html_content):
+            linkedin_link_found = True
+            # Verify attributes in the matched link
+            match = re.search(r'<a([^>]*href="https://www\.linkedin\.com/company/egp-group-mendoza/"[^>]*)>', html_content)
+            if match:
+                attrs = match.group(1)
+                if 'target="_blank"' not in attrs:
+                    linkedin_errors.append("LinkedIn link missing target='_blank'")
+                if 'rel="noopener"' not in attrs:
+                    linkedin_errors.append("LinkedIn link missing rel='noopener'")
+                if 'aria-label=' not in attrs:
+                    linkedin_errors.append("LinkedIn link missing aria-label")
+                elif 'aria-label="LinkedIn de EGP Group"' not in attrs:
+                    linkedin_errors.append("LinkedIn link has incorrect aria-label")
+    
+    if not linkedin_link_found:
+        linkedin_errors.append("LinkedIn link to egp-group-mendoza not found")
+    
+    if linkedin_errors:
+        checker.errors.extend(linkedin_errors)
+        print(f"   ❌ {len(linkedin_errors)} LinkedIn link issue(s)")
+        for error in linkedin_errors:
+            print(f"      - {error}")
+    else:
+        print(f"   ✓ LinkedIn link present with correct attributes")
+    
     # Summary
     print("\n" + "=" * 60)
     total_errors = len(checker.errors)
